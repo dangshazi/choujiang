@@ -1,8 +1,8 @@
 //球的半径
-var radius = 300;
+var radius = 500;
 // 2度
 var dtr = Math.PI/180;
-var d=900;
+var d=1400;
 //LIst 存放的是 Tag的宽度 高度
 var mcList = [];
 //是否激活旋转
@@ -22,6 +22,11 @@ var howElliptical=1;
 
 var aA=null;
 var oDiv=null;
+
+//随机生成颜色
+var getRandomColor = function(){
+	  return '#'+(Math.random()*0xffffff<<0).toString(16); 
+	}
 
 window.onload=function ()
 {
@@ -87,8 +92,8 @@ function update()
 	else
 	{
 		//控制停下来的加速度
-		a = lasta * 0.99;
-		b = lastb * 0.99;
+		a = lasta * 0.97;
+		b = lastb * 0.97;
 	}
 	
 	lasta=a;
@@ -126,7 +131,7 @@ function update()
 		mcList[j].cx=rx3;
 		mcList[j].cy=ry3;
 		mcList[j].cz=rz3;
-		//per是什么鬼？？？？
+		//per是调节scale的参数
 		per=d/(d+rz3);
 		
 		mcList[j].x=(howElliptical*rx3*per)-(howElliptical*2);
@@ -134,8 +139,7 @@ function update()
 		mcList[j].scale=per;
 		mcList[j].alpha=per;
 		
-		mcList[j].alpha=(mcList[j].alpha-0.5);
-//		*(10/8);
+		mcList[j].alpha=(mcList[j].alpha-0.3)*(6/10);
 	}
 	
 	doPosition();
@@ -156,13 +160,13 @@ function depthSort()
 	(
 		function (vItem1, vItem2)
 		{
-			if(vItem1.cz>vItem2.cz)
-			{
-				return 1;
-			}
-			else if(vItem1.cz<vItem2.cz)
+			if(vItem1.style.fontSize>vItem2.style.fontSize)
 			{
 				return -1;
+			}
+			else if(vItem1.style.fontSize<vItem2.style.fontSize)
+			{
+				return 1;
 			}
 			else
 			{
@@ -172,11 +176,13 @@ function depthSort()
 	);
 	
 	//sort 之后吧 index 更改
+	window.console.log("fontsize sort start------------");
 	for(i=0;i<aTmp.length;i++)
 	{
-		window.console.log(aTmp[i].innerText+"--"+i +"--"+aTmp[i].cz);
-		aTmp[i].style.zIndex=i;
+		window.console.log(aTmp[i].innerText+"--"+i +"--"+aTmp[i].style.fontSize);
+		aTmp[i].style.zIndex=i+1;
 	}
+	window.console.log("fontsize sort end------------");
 }
 
 function positionAll()
@@ -190,11 +196,13 @@ function positionAll()
 	var oFragment=document.createDocumentFragment();
 	
 	//将 <a>随机排序并存入 aTmp
+//	window.console.log("aTmp开始------------");
 	for(i=0;i<aA.length;i++)
 	{
 		aTmp.push(aA[i]);
+//		window.console.log(aTmp[i].innerText);
 	}
-	
+//	window.console.log("aTmp结束------------");
 	aTmp.sort
 	(
 		function ()
@@ -202,7 +210,12 @@ function positionAll()
 			return Math.random()<0.5?1:-1;
 		}
 	);
-	
+//	window.console.log("aTmp开始------------");
+	for(i=0;i<aTmp.length;i++)
+	{
+		window.console.log(aTmp[i].innerText);
+	}
+//	window.console.log("aTmp结束------------");
 	//将随机排序后的aTmp存放到Fragment中
 	for(i=0;i<aTmp.length;i++)
 	{
@@ -210,10 +223,7 @@ function positionAll()
 	}
 	
 	oDiv.appendChild(oFragment);
-	//随机生成颜色
-	var getRandomColor = function(){
-		  return '#'+(Math.random()*0xffffff<<0).toString(16); 
-		}
+	
 	//循环计算每一个 Tag的位置
 	//tag分为球前面的和球后面的
 	for( var i=1; i<max+1; i++){
@@ -244,13 +254,14 @@ function positionAll()
 	
 	
 }
-
+var maxScaleIndex = 0;
+var maxScaleIndexColor;
 function doPosition()
 {
 	var l=oDiv.offsetWidth/2;
 	var t=oDiv.offsetHeight/2;
 	var maxScale = 0;
-	var maxScaleIndex = 0;
+	aA[maxScaleIndex].style.color = maxScaleIndexColor;
 	for(var i=0;i<mcList.length;i++)
 	{
 		aA[i].style.left=mcList[i].cx+l-mcList[i].offsetWidth/2+'px';
@@ -258,9 +269,10 @@ function doPosition()
 		
 //		aA[i].style.fontSize=Math.ceil(12*mcList[i].scale/2)+8+'px';
 		//给字体大小一个二次曲线增长 x^2
-		aA[i].style.fontSize=Math.ceil(60*Math.pow(((mcList[i].scale-0.75)/0.75),2))+8+'px';
+		aA[i].style.fontSize=Math.ceil(60*Math.pow(((mcList[i].scale-0.75)/0.75),2))+5+'px';
 //		aA[i].style.filter="alpha(opacity="+100*mcList[i].alpha+")";
 		aA[i].style.opacity=mcList[i].alpha;
+//		aA[i].style.color = getRandomColor();
 		if (mcList[i].scale > maxScale){
 			maxScale = mcList[i].scale;
 			maxScaleIndex =i;
@@ -268,7 +280,11 @@ function doPosition()
 		
 	}
 	//这里需要把中奖者的名字放得更大一点
-//	aA[maxScaleIndex].style.fontSize=200+'px';
+	aA[maxScaleIndex].style.fontSize=140+'px';
+	aA[maxScaleIndex].style.opacity = 1;
+	maxScaleIndexColor = aA[maxScaleIndex].style.color;
+	aA[maxScaleIndex].style.color = "#ffffff" 
+	
 	
 }
 //分别将 a,b,c从 （0-180）的 转换为 π 
