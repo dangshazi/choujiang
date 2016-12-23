@@ -107,7 +107,7 @@ function update()
 			window.console.log(mcList[j].cz);
 		}
 		 */
-		
+		canRemove = true;
 		return;
 	}
 	
@@ -176,13 +176,13 @@ function depthSort()
 	);
 	
 	//sort 之后吧 index 更改
-	window.console.log("fontsize sort start------------");
+//	window.console.log("fontsize sort start------------");
 	for(i=0;i<aTmp.length;i++)
 	{
-		window.console.log(aTmp[i].innerText+"--"+i +"--"+aTmp[i].style.fontSize);
+//		window.console.log(aTmp[i].innerText+"--"+i +"--"+aTmp[i].style.fontSize);
 		aTmp[i].style.zIndex=i+1;
 	}
-	window.console.log("fontsize sort end------------");
+//	window.console.log("fontsize sort end------------");
 }
 
 function positionAll()
@@ -256,13 +256,21 @@ function positionAll()
 }
 var maxScaleIndex = 0;
 var maxScaleIndexColor;
+var canRemove = false;
 function doPosition()
 {
 	var l=oDiv.offsetWidth/2;
 	var t=oDiv.offsetHeight/2;
 	var maxScale = 0;
 	aA[maxScaleIndex].style.color = maxScaleIndexColor;
-	for(var i=0;i<mcList.length;i++)
+	
+	if (canRemove){
+		aA[maxScaleIndex].parentNode.removeChild(aA[maxScaleIndex]);
+//		mcList.splice(maxScaleIndex, 1);
+		canRemove = false;
+	}
+	
+	for(var i=0;i<aA.length;i++)
 	{
 		aA[i].style.left=mcList[i].cx+l-mcList[i].offsetWidth/2+'px';
 		aA[i].style.top=mcList[i].cy+t-mcList[i].offsetHeight/2+'px';
