@@ -265,8 +265,9 @@ function doPosition()
 	aA[maxScaleIndex].style.color = maxScaleIndexColor;
 	
 	if (canRemove){
-		aA[maxScaleIndex].parentNode.removeChild(aA[maxScaleIndex]);
+//		aA[maxScaleIndex].parentNode.removeChild(aA[maxScaleIndex]);
 //		mcList.splice(maxScaleIndex, 1);
+		aA[maxScaleIndex].innerText = "XXX";
 		canRemove = false;
 	}
 	
